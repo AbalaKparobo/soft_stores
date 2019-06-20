@@ -8,15 +8,32 @@ exports.getAddProduct = (req, res, next) => {
   });
 }
 
+// exports.postAddProduct = (req, res, next) => {
+//   const title = req.body.title;
+//   const imageUrl = req.body.imageUrl;
+//   const price = req.body.price;
+//   const description = req.body.description;
+//   const product = new Product(null, title, imageUrl, price, description);
+//   product.save()
+//     .then(() => {
+//       res.redirect('/')  //admin/products
+//     })
+//     .catch(err => console.log(err));
+// }
+
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(null, title, imageUrl, description, price);
-  product.save();
-  res.redirect('/admin/products');
-}
+  product
+    .save()
+    .then(() => {
+      res.redirect('/');
+    })
+    .catch(err => console.log(err));
+};
 
 exports.getEditProduct = (req, res, next) => {
   const editing = req.query.edit;
