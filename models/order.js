@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 
 const sql = require('../utils/database');
 
-const Cart = sql.define('cart', {
+const Order = sql.define('order', {
     id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -11,4 +11,4 @@ const Cart = sql.define('cart', {
     }
 })
 
-module.exports = Cart;
+module.exports = Order;
