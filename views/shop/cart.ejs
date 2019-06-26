@@ -1,24 +1,32 @@
-<%- include('../includes/head.ejs') %>
+<%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/cart.css">
     </head>
 
     <body>
-        <%- include('../includes/navigation.ejs') %>
+        <%- include('../partials/nav') %>
         <main>
-            <% if(products.length > 0) { %>
-                <ul>
-                    <% products.forEach(product => { %>
-                    <li><%= product.title %> || <span>Quantity: <%= product.cartItem.quantity %></span></li>
-                    <form action="/cart/delete" method="post">
-                        <input type="hidden" value="<%= product.id %>" name="id">
-                        <button type="submit" class="btn">Delete</button>
-                    </form>
+            <% if (products.length > 0) { %>
+                <ul class="cart__item-list">
+                    <% products.forEach(p => { %>
+                        <li class="cart__item">
+                            <h1><%= p.title %></h1>
+                            <h2>Quantity: <%= p.quantity %></h2>
+                            <form action="/delete-cart-item" method="POST">
+                                <input type="hidden" value="<%= p._id %>" name="productId">
+                                <button class="btn danger" type="submit">Delete</button>
+                            </form>
+                        </li>
                     <% }) %>
                 </ul>
-                <form action="/create-order" method="POST">
-                    <button class="btn" type="submit">Order Now!</button>
-                </form>
+                <hr>
+                <div class="centered">
+                    <form action="/create-order" method="POST">
+                        <button type="submit" class="btn">Order Now!</button>
+                    </form>
+                </div>
+                
             <% } else { %>
-                <h1>No Products in Cart Yet!</h1>
+                <h1>No Products in Cart!</h1>
             <% } %>
         </main>
-        <%- include('../includes/end.ejs') %>
+        <%- include('../partials/footer') %>

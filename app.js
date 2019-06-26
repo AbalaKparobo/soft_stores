@@ -2,16 +2,10 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongo = require('mongodb'); 
 
-const sequelize = require('./utils/database');
-const User = require('./models/user');
-const Cart = require('./models/cart');
-const Order = require('./models/order');
-const Product = require('./models/product');
-const CartItem = require('./models/cart-item');
-const OrderItem = require('./models/order-item');
-const errorController = require('./controllers/error');
-
+const db = require('./utils/database');
+const mongoConnect = db.mongoConnect;
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -19,18 +13,22 @@ app.set('view engine', 'ejs');
 
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const errorController = require('./controllers/error');
 
+const User = require('./models/user');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  User.findByPk(1)
+  User.findById("5d111586a5ae581d0cd2309f")
     .then(user => {
-      req.user = user;
+      req.user = new User(user._id, user.name, user.email, user.cart );
       next();
     })
-    .catch(err => {console.log(err)})
+    .catch(err => {
+      console.log(err)
+    })
 })
 
 app.use('/admin', adminRoutes);
@@ -38,36 +36,16 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
-User.hasMany(Product);
-User.hasOne(Cart);
-Cart.belongsTo(User);
-Product.belongsToMany(Cart, { through: CartItem });
-Cart.belongsToMany(Product, { through: CartItem });
-User.hasOne(Order);
-Order.belongsTo(User);
-Product.belongsToMany(Order, {through: OrderItem});
-Order.belongsToMany(Product, {through: OrderItem});
 
-
-sequelize
-  // .sync({force: true})
-  .sync()
-  .then(result => {
-    User.findByPk(1)
-  })
-  .then(user => {
-    // if(!user) {
-    //   return User.create({
-    //     username: 'kpas',
-    //     email: 'test@example.com'
-    //   });
-    // }
-    return user
-  }).then(user => {
-    app.listen(3000);
-    // return user.createCart();
-  })
-  // .then(result => {
+mongoConnect(() => {
+  // let user;
+  // User.findById(null).then(result => {
+  //   console.log(result);
+  //   user = result;
   // })
-  .catch(err => console.log(err));
+  // if (!user) {
+  //   const user = new User(null, "kpas", "test@example.com")
+  //   user.save()
+  // }
+  app.listen(3000);
+})   
