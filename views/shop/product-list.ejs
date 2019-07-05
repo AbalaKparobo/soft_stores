@@ -1,9 +1,9 @@
-<%- include('../includes/head.ejs') %>
+<%- include('../partials/head') %>
     <link rel="stylesheet" href="/css/product.css">
     </head>
 
     <body>
-        <%- include('../includes/navigation.ejs') %>
+        <%- include('../partials/nav') %>
 
             <main>
                 <% if (prods.length > 0) { %>
@@ -16,7 +16,7 @@
                                     </h1>
                                 </header>
                                 <div class="card__image">
-                                    <img src="<%= product.imageUrl %>" alt="<%= product.title %>">
+                                    <img src="/<%= product.imageUrl %>" alt="<%= product.title %>">
                                 </div>
                                 <div class="card__content">
                                     <h2 class="product__price">$
@@ -28,7 +28,9 @@
                                 </div>
                                 <div class="card__actions">
                                     <a href="/product/<%= product._id %>" class="btn">Details</a>
-                                    <%- include('../partials/add-to-cart', {product: product}) %>
+                                    <% if (isAuthenticated) { %>
+                                        <%- include('../partials/add-to-cart', {product: product}) %>
+                                    <% } %>
                                 </div>
                             </article>
                             <% } %>
@@ -37,4 +39,4 @@
                         <h1>No Products Found!</h1>
                         <% } %>
             </main>
-            <%- include('../includes/end.ejs') %>
+            <%- include('../partials/footer') %>

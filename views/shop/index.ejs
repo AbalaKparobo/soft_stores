@@ -3,7 +3,7 @@
 </head>
 
 <body>
-    <%- include('../partials/nav') %>
+<%- include('../partials/nav') %>
 
     <main>
         <% if (prods.length > 0) { %>
@@ -22,8 +22,10 @@
                             <p class="product__description"><%= product.description %></p>
                         </div>
                         <div class="card__actions">
-                                <a href="/product/<%= product._id %>" class="btn">Details</a>
-                            <%- include('../partials/add-to-cart', {product: product}) %>
+                            <a href="/product/<%= product._id %>" class="btn">Details</a>
+                            <% if (isAuthenticated) { %>
+                                <%- include('../partials/add-to-cart', {product: product}) %>
+                            <% } %>
                         </div>
                     </article>
                 <% } %>
