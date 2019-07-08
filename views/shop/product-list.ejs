@@ -35,6 +35,7 @@
                             </article>
                             <% } %>
                     </div>
+                    <%- include('../partials/pagination', {currentPage: currentPage, hasNext: hasNext, nextPage: nextPage, hasPrev: hasPrev, prevPage: prevPage, lastPage: lastPage}) %>
                     <% } else { %>
                         <h1>No Products Found!</h1>
                         <% } %>

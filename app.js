@@ -18,7 +18,6 @@ const authRoutes = require('./routes/auth');
 const errorController = require('./controllers/error');
 const { port, DB_URI } = require('./config')
 
- //temp fix for env
 
 const app = express();
 

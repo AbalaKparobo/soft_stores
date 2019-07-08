@@ -1,4 +1,7 @@
 const Product = require('../models/product');
+const fileHelper = require('../utils/fileHelper');
+
+const ITEMS_PER_PAGE = 2;
 
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
@@ -119,8 +122,7 @@ exports.getProducts = (req, res, next) => {
   const userId = req.user._id;
   Product.find({userId: userId})
     .then(products => {
-      // console.log(products);
-      res.render('admin/product-list', {
+      return res.render('admin/product-list', {
         prods: products,
         pageTitle: 'Online Shop/Admin Products',
         path: '/admin/products'
@@ -173,11 +175,12 @@ exports.postEditProduct = (req, res, next) => {
       product.price = price;
       product.description = description;
       if(image) {
+        fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = image.path;
       }
       return product.save()
         .then(result => {
-          console.log(`Updated product in DB ${result}`);
+          console.log(`Updated product in DB `);
           res.redirect('/admin/products');
         })
     })
@@ -190,14 +193,19 @@ exports.postEditProduct = (req, res, next) => {
 
 
 exports.deleteProduct = (req, res, next) => {
-  const productId = req.body.productId;
-  Product.deleteOne({_id: productId, userId: req.user._id})
-    .then(() => {
-      res.redirect('/admin/products')
-    })
-    .catch(err => {
-      const error = new Error('Error deleting product');
-      error.httpStatusCode = 500;
-      next(error);
-    });  
-  }
+  const productId = req.params.productId;
+  Product.findById(productId)
+  .then(product => {
+    if(!product) {
+      next(new Error('No Product found for image delete'));
+    }
+    fileHelper.deleteFile(product.imageUrl)
+    return Product.deleteOne({_id: productId, userId: req.user._id})
+})
+.then(() => {
+  res.status(200).json({message: 'Succesfully deleted product'})
+})
+.catch(err => {
+  res.status(500).json({message: 'Production deleting failed'})
+});  
+}

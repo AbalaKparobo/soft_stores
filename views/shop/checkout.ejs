@@ -1,0 +1,69 @@
+<%- include('../partials/head') %>
+    <link rel="stylesheet" href="/css/cart.css">
+    </head>
+
+    <body>
+        <%- include('../partials/nav') %>
+        <main>
+            <% if (products.length > 0) { %>
+                <ul class="cart__item-list">
+                    <% products.forEach(p => { %>
+                        <li class="cart__item">
+                            <h1><%= p.productId.title %></h1>
+                            <h2>Quantity: <%= p.quantity %></h2>
+                        </li>
+                    <% }) %>
+                </ul>
+                <hr>
+                <div class="centered">
+                   <h2>Total: <%= totalSum %></h2>
+                </div>
+                <div class="centered">
+                    <!-- Load Stripe.js on your website. -->
+                    <script src="https://js.stripe.com/v3"></script>
+
+                    <!-- Create a button that your customers click to complete their purchase. Customize the styling to suit your branding. -->
+                    <button
+                    style="background-color:#6772E5;color:#FFF;padding:8px 12px;border:0;border-radius:4px;font-size:1em"
+                    id="checkout-button-plan_FOYUBGJujw3QSh"
+                    role="link">
+                    Checkout
+                    </button>
+
+                    <div id="error-message"></div>
+
+                    <script>
+                        var stripe = Stripe('pk_test_IqjRG8PQ2pyTZnoiBq9BnKyk00T0K1r7w9');
+
+                        var checkoutButton = document.getElementById('checkout-button-plan_FOYUBGJujw3QSh');
+                        checkoutButton.addEventListener('click', function () {
+                            // When the customer clicks on the button, redirect
+                            // them to Checkout.
+                        stripe.redirectToCheckout({
+                        items: [{plan: 'plan_FOYUBGJujw3QSh', quantity: 1}],
+
+                        // Do not rely on the redirect to the successUrl for fulfilling
+                        // purchases, customers may not always reach the success_url after
+                        // a successful payment.
+                        // Instead use one of the strategies described in
+                        // https://stripe.com/docs/payments/checkout/fulfillment
+                        successUrl: 'http://localhost:3000',
+                        cancelUrl: 'https://your-website.com/canceled',
+                        })
+                        .then(function (result) {
+                        if (result.error) {
+                        // If `redirectToCheckout` fails due to a browser or network
+                        // error, display the localized error message to your customer.
+                        var displayError = document.getElementById('error-message');
+                        displayError.textContent = result.error.message;
+                    }
+                    });
+                });
+            </script>
+                </div>
+                
+            <% } else { %>
+                <h1>No Products in Cart!</h1>
+            <% } %>
+        </main>
+        <%- include('../partials/footer') %>

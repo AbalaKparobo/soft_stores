@@ -12,10 +12,10 @@
                     <% const revOrders = orders.reverse() %>
                     <% revOrders.forEach(order => { %>
                         <li class="orders__item">
-                            <h1>Order - # <%= order._id %></h1>
+                            <h1>Order - # <%= order._id %> -- <a href="/order/<%= order._id %>">Get Invoice</a></h1>
                             <ul class="orders__products">
                                 <% order.items.forEach(item => { %>
-                                    <li class="orders__products-item"><%= item.product.title %> (<%= item.quantity %>) - <a href="/order/<%= order._id %>">Get Invoice</a></li>
+                                    <li class="orders__products-item"><%= item.product.title %> (<%= item.quantity %>) </li>
                                 <% }); %>
                             </ul>
                         </li>
